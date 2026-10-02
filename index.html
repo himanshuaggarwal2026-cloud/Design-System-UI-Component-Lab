@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura UI - Design System & Component Lab</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: 'var(--color-brand-50, #f0fdf4)',
+                            100: 'var(--color-brand-100, #dcfce7)',
+                            500: 'var(--color-brand-500, #22c55e)',
+                            600: 'var(--color-brand-600, #16a34a)',
+                            700: 'var(--color-brand-700, #15803d)',
+                        },
+                        accent: 'var(--color-accent, #6366f1)',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    boxShadow: {
+                        'glow': '0 0 20px -5px rgba(99, 102, 241, 0.4)',
+                        'soft': '0 10px 30px -10px rgba(0, 0, 0, 0.08)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        :root {
+            --color-brand-500: #6366f1;
+            --color-brand-600: #4f46e5;
+            --color-brand-700: #4338ca;
+            --color-accent: #10b981;
+        }
+
+        /* Smooth custom transitions */
+        .theme-transition {
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Floating label transition */
+        .floating-input:focus ~ .floating-label,
+        .floating-input:not(:placeholder-shown) ~ .floating-label {
+            transform: translateY(-1.25rem) scale(0.85);
+            color: var(--color-brand-500);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #334155;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans theme-transition antialiased min-h-screen flex flex-col">
+
+    <!-- Top Navbar -->
+    <header class="sticky top-0 z-40 w-full border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md theme-transition">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-emerald-400 flex items-center justify-center text-white font-bold text-xl shadow-glow">
+                    A
+                </div>
+                <div>
+                    <span class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-indigo-600 to-emerald-500 bg-clip-text text-transparent">Aura System</span>
+                    <span class="hidden sm:inline-block text-xs ml-2 px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 font-mono font-medium">v1.2.0</span>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center space-x-1 text-sm font-medium">
+                <a href="#showcase" class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">Components</a>
+                <a href="#tokens" class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">Design Tokens</a>
+                <a href="#principles" class="px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">UX Principles</a>
+            </nav>
+
+            <!-- Quick Controls & Theme Toggle -->
+            <div class="flex items-center space-x-3">
+                <button id="themeToggleBtn" onclick="toggleDarkMode()" class="p-2 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition" title="Toggle Light/Dark Theme">
+                    <i id="themeIcon" class="fa-solid fa-moon text-lg"></i>
+                </button>
+                <a href="#tokens" class="hidden sm:flex items-center space-x-2 text-xs font-semibold px-3 py-2 rounded-xl bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 hover:opacity-90 transition">
+                    <i class="fa-solid fa-palette"></i>
+                    <span>Customize Theme</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative overflow-hidden border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-12 lg:py-16 theme-transition">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-12 gap-8 items-center">
+                <div class="lg:col-span-8 space-y-4">
+                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 text-xs font-semibold">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span>Portfolio Showcase Piece • UI/UX & Frontend Lab</span>
+                    </div>
+                    <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+                        Scalable Components & Interactive Design Systems.
+                    </h1>
+                    <p class="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl">
+                        An interactive UI lab designed to showcase accessibility standards, token-based design architecture, responsive micro-interactions, and visual hierarchy best practices.
+                    </p>
+                    <div class="flex flex-wrap gap-3 pt-2">
+                        <span class="text-xs px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800 font-mono text-slate-600 dark:text-slate-300">WCAG 2.1 AA Compliant</span>
+                        <span class="text-xs px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800 font-mono text-slate-600 dark:text-slate-300">Atomic Architecture</span>
+                        <span class="text-xs px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800 font-mono text-slate-600 dark:text-slate-300">Fluid Tokenization</span>
+                    </div>
+                </div>
+
+                <!-- Portfolio Author Badge (Recruiter Card) -->
+                <div class="lg:col-span-4 bg-slate-50 dark:bg-slate-800/50 p-6 rounded-2xl border border-slate-200 dark:border-slate-700/60 space-y-4 shadow-sm">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-lg shadow-md">
+                            UX
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-900 dark:text-white text-base">UI/UX & Frontend Developer</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Entry-Level Portfolio Case Study</p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                        "I bridge the gap between design specs in Figma and production-ready clean frontend code with a relentless focus on accessibility."
+                    </p>
+                    <div class="pt-2 border-t border-slate-200 dark:border-slate-700/60 flex justify-between items-center text-xs">
+                        <span class="text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
+                            <i class="fa-solid fa-circle-check text-[10px]"></i> Open for hire
+                        </span>
+                        <span class="text-slate-400">Updated October 2026</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16 flex-grow w-full">
+
+        <!-- SECTION 1: Interactive Component Showcase -->
+        <section id="showcase" class="space-y-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-slate-200 dark:border-slate-800 pb-4 gap-2">
+                <div>
+                    <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">1. Live Component Lab</h2>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Interactive UI components with stateful transitions and micro-feedback.</p>
+                </div>
+                <div class="flex items-center space-x-2 text-xs font-mono text-slate-400">
+                    <i class="fa-solid fa-code text-indigo-500"></i>
+                    <span>Pure Tailwind CSS + JS</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- CARD 1: Interactive Buttons -->
+                <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-soft space-y-6 theme-transition">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                            <i class="fa-solid fa-[#000] fa-hand-pointer text-indigo-500"></i> Button Component Matrix
+                        </h3>
+                        <span class="text-xs bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-slate-500 font-mono">Interactive</span>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-4 items-center">
+                        <!-- Primary Button -->
+                        <button class="px-5 py-2.5 rounded-xl font-semibold text-sm bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white shadow-md shadow-indigo-500/20 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900">
+                            Primary
+                        </button>
+
+                        <!-- Secondary Button -->
+                        <button class="px-5 py-2.5 rounded-xl font-semibold text-sm bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 transition-all duration-150 active:scale-95">
+                            Secondary
+                        </button>
+
+                        <!-- Outline Button -->
+                        <button class="px-5 py-2.5 rounded-xl font-semibold text-sm border-2 border-slate-300 dark:border-slate-700 hover:border-indigo-500 text-slate-700 dark:text-slate-300 transition-all duration-150 active:scale-95">
+                            Outline
+                        </button>
+
+                        <!-- Stateful Action Button (Simulated Async Loading & Success) -->
+                        <button id="asyncBtn" onclick="triggerAsyncButton()" class="px-5 py-2.5 rounded-xl font-semibold text-sm bg-emerald-600 hover:bg-emerald-700 text-white transition-all duration-200 flex items-center space-x-2 min-w-[140px] justify-center active:scale-95">
+                            <span id="asyncBtnText">Submit Action</span>
+                            <i id="asyncBtnIcon" class="fa-solid fa-arrow-right text-xs"></i>
+                        </button>
+                    </div>
+
+                    <div class="p-3 bg-slate-50 dark:bg-slate-950/50 rounded-xl text-xs text-slate-500 dark:text-slate-400 space-y-1">
+                        <p class="font-semibold text-slate-700 dark:text-slate-300">UX Consideration:</p>
+                        <p>Includes visible <code class="font-mono text-indigo-500">:focus-visible</code> rings for keyboard navigation and active visual scaling feedback for touch devices.</p>
+                    </div>
+                </div>
+
+                <!-- CARD 2: Form Controls & Validation -->
+                <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-soft space-y-6 theme-transition">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                            <i class="fa-solid fa-input-numeric text-indigo-500"></i> Smart Forms & Inputs
+                        </h3>
+                        <span class="text-xs bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-slate-500 font-mono">Live Validation</span>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Floating Label Input with Validation -->
+                        <div class="relative">
+                            <input type="email" id="emailInput" oninput="validateEmail(this.value)" placeholder=" " class="floating-input peer w-full px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-transparent text-sm focus:outline-none focus:border-indigo-500 dark:text-white transition" />
+                            <label class="floating-label absolute left-4 top-3.5 text-slate-400 text-sm pointer-events-none transition-all duration-200">Email Address</label>
+                            <span id="emailStatusIcon" class="absolute right-4 top-3.5 text-slate-400 text-sm"></span>
+                            <p id="emailError" class="text-[11px] text-red-500 mt-1 hidden">Please enter a valid email address.</p>
+                        </div>
+
+                        <!-- Password with Strength Meter -->
+                        <div class="space-y-1.5">
+                            <input type="password" id="passInput" oninput="checkPasswordStrength(this.value)" placeholder="Enter Password" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-transparent text-sm focus:outline-none focus:border-indigo-500 dark:text-white transition" />
+                            
+                            <!-- Strength Indicator Bar -->
+                            <div class="flex items-center space-x-2 pt-1">
+                                <div class="flex-1 h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden flex">
+                                    <div id="strengthBar" class="h-full w-0 bg-red-500 transition-all duration-300"></div>
+                                </div>
+                                <span id="strengthText" class="text-[11px] text-slate-400 font-mono w-16 text-right">Weak</span>
+                            </div>
+                        </div>
+
+                        <!-- Toggle Switch -->
+                        <div class="flex items-center justify-between pt-2">
+                            <span class="text-sm font-medium text-slate-700 dark:text-slate-300">Enable Push Notifications</span>
+                            <button id="toggleSwitch" onclick="toggleSwitchState()" class="w-12 h-6 bg-slate-300 dark:bg-slate-700 rounded-full p-1 transition-colors duration-200 ease-in-out relative">
+                                <div id="toggleCircle" class="w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-200 ease-in-out"></div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 3: Complex Card Layouts (Product & Expandable User Profile) -->
+                <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-soft space-y-6 theme-transition">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                            <i class="fa-solid fa-address-card text-indigo-500"></i> Interactive Cards & Drawer
+                        </h3>
+                        <span class="text-xs bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-slate-500 font-mono">Expandable</span>
+                    </div>
+
+                    <!-- User Profile Card -->
+                    <div class="border border-slate-200 dark:border-slate-800 rounded-xl p-4 bg-slate-50/50 dark:bg-slate-800/40 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" alt="Avatar" class="w-10 h-10 rounded-full object-cover border-2 border-indigo-500" />
+                                <div>
+                                    <h4 class="font-bold text-sm text-slate-900 dark:text-white">Sophia Chen</h4>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400">Senior Product Designer</p>
+                                </div>
+                            </div>
+                            <button onclick="toggleCardDrawer()" class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 transition">
+                                <span id="drawerBtnText">View Bio</span>
+                            </button>
+                        </div>
+
+                        <!-- Expandable Drawer content -->
+                        <div id="expandableDrawer" class="hidden text-xs text-slate-600 dark:text-slate-300 pt-3 border-t border-slate-200 dark:border-slate-700/60 space-y-2">
+                            <p>Specializes in design systems, micro-interactions, and accessibility audit implementations for SaaS web software.</p>
+                            <div class="flex space-x-2 pt-1 font-mono text-[10px] text-slate-400">
+                                <span>• 8+ Yrs Exp</span>
+                                <span>• Figma Master</span>
+                                <span>• Tailwind Pro</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 4: Interactive Overlays & Tab Controls -->
+                <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-soft space-y-6 theme-transition">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                            <i class="fa-solid fa-window-restore text-indigo-500"></i> Overlays & Feedback Triggers
+                        </h3>
+                        <span class="text-xs bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded text-slate-500 font-mono">Feedback</span>
+                    </div>
+
+                    <!-- Custom Tab Bar -->
+                    <div class="p-1 bg-slate-100 dark:bg-slate-800 rounded-xl flex space-x-1 text-xs font-medium">
+                        <button onclick="switchTab('tab1')" id="tab1-btn" class="flex-1 py-2 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm transition">Design</button>
+                        <button onclick="switchTab('tab2')" id="tab2-btn" class="flex-1 py-2 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">Code</button>
+                        <button onclick="switchTab('tab3')" id="tab3-btn" class="flex-1 py-2 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">Tokens</button>
+                    </div>
+
+                    <!-- Tab Panel Preview -->
+                    <div class="p-3 bg-slate-50 dark:bg-slate-950/40 rounded-xl text-xs min-h-[60px] flex items-center justify-center text-slate-600 dark:text-slate-400">
+                        <p id="tabContent">Design View: Focused on visual contrast, typographic scale, and spatial alignment.</p>
+                    </div>
+
+                    <!-- Overlay Action Triggers -->
+                    <div class="flex flex-wrap gap-3 pt-2">
+                        <button onclick="openModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-900 hover:opacity-90 transition">
+                            Launch Modal
+                        </button>
+
+                        <button onclick="triggerToast()" class="px-4 py-2 rounded-xl text-xs font-semibold border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                            Trigger Toast Alert
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 2: Dynamic Design Tokens & Theme Inspector -->
+        <section id="tokens" class="space-y-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-slate-200 dark:border-slate-800 pb-4 gap-2">
+                <div>
+                    <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">2. Live Theme & Token Inspector</h2>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Test how design tokens adapt dynamically across palettes, font scales, and spatial grids.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Primary Color Palette Picker -->
+                <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-soft space-y-4">
+                    <h3 class="font-bold text-slate-800 dark:text-slate-200 text-base">Primary Brand Accent</h3>
+                    <p class="text-xs text-slate-500">Select a color token to dynamically update component highlight colors in real-time.</p>
+                    
+                    <div class="flex items-center space-x-3 pt-2">
+                        <button onclick="changeThemeAccent('#6366f1')" class="w-8 h-8 rounded-full bg-indigo-500 ring-2 ring-offset-2 ring-indigo-500 focus:outline-none transition-transform hover:scale-110"></button>
+                        <button onclick="changeThemeAccent('#10b981')" class="w-8 h-8 rounded-full bg-emerald-500 hover:scale-110 focus:outline-none transition-transform"></button>
+                        <button onclick="changeThemeAccent('#f43f5e')" class="w-8 h-8 rounded-full bg-rose-500 hover:scale-110 focus:outline-none transition-transform"></button>
+                        <button onclick="changeThemeAccent('#06b6d4')" class="w-8 h-8 rounded-full bg-cyan-500 hover:scale-110 focus:outline-none transition-transform"></button>
+                        <button onclick="changeThemeAccent('#f59e0b')" class="w-8 h-8 rounded-full bg-amber-500 hover:scale-110 focus:outline-none transition-transform"></button>
+                    </div>
+
+                    <div class="p-3 bg-slate-50 dark:bg-slate-950 rounded-xl font-mono text-xs space-y-1 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-800">
+                        <div>--color-brand-primary: <span id="tokenHexCode" class="text-indigo-500 font-bold">#6366f1</span></div>
+                        <div>--token-radius: <span class="text-slate-800 dark:text-slate-200 font-bold">0.75rem (12px)</span></div>
+                    </div>
+                </div>
+
+                <!-- Typographic Hierarchy Scale -->
+                <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-soft space-y-4">
+                    <h3 class="font-bold text-slate-800 dark:text-slate-200 text-base">Type Scale Visualizer</h3>
+                    <div class="space-y-2 font-sans">
+                        <div class="flex items-baseline justify-between border-b border-slate-100 dark:border-slate-800 pb-1">
+                            <span class="text-xs text-slate-400 font-mono">H1 / 2.25rem</span>
+                            <span class="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">Display Title</span>
+                        </div>
+                        <div class="flex items-baseline justify-between border-b border-slate-100 dark:border-slate-800 pb-1">
+                            <span class="text-xs text-slate-400 font-mono">H2 / 1.5rem</span>
+                            <span class="text-base font-bold text-slate-800 dark:text-slate-200">Section Subtitle</span>
+                        </div>
+                        <div class="flex items-baseline justify-between border-b border-slate-100 dark:border-slate-800 pb-1">
+                            <span class="text-xs text-slate-400 font-mono">Body / 0.875rem</span>
+                            <span class="text-xs text-slate-600 dark:text-slate-400">Paragraph default text line height.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Spacing Grid Unit Scale -->
+                <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-soft space-y-4">
+                    <h3 class="font-bold text-slate-800 dark:text-slate-200 text-base">Spatial Layout Grid</h3>
+                    <p class="text-xs text-slate-500">Base-4/8 grid units for consistent padding, margins, and component alignments.</p>
+
+                    <div class="space-y-2 font-mono text-[11px]">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-4 h-4 bg-indigo-500/20 border border-indigo-500 rounded"></div>
+                            <span>4px (0.25rem) — Extra Small Gap</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-4 bg-indigo-500/20 border border-indigo-500 rounded"></div>
+                            <span>8px (0.50rem) — Compact Control Padding</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-16 h-4 bg-indigo-500/20 border border-indigo-500 rounded"></div>
+                            <span>16px (1.00rem) — Default Layout Padding</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: UX Principles & Thought Process (Recruiter Value Add) -->
+        <section id="principles" class="space-y-8">
+            <div class="border-b border-slate-200 dark:border-slate-800 pb-4">
+                <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">3. UX Rationale & Accessibility Commitments</h2>
+                <p class="text-sm text-slate-500 dark:text-slate-400">Design considerations and standards applied throughout this interface system.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- WCAG & Accessibility -->
+                <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-lg">
+                        <i class="fa-solid fa-universal-access"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-900 dark:text-white text-base">Accessibility First (WCAG 2.1)</h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Ensured text contrast ratios exceed 4.5:1 for normal body text. Built keyboard-navigable focus rings and aria-labels for screen reader support.
+                    </p>
+                </div>
+
+                <!-- Visual Hierarchy -->
+                <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold text-lg">
+                        <i class="fa-solid fa-layer-group"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-900 dark:text-white text-base">Clear Visual Hierarchy</h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Utilizes systematic font weights, color contrasts, and spatial scale to guide user focus towards primary actions and critical inputs seamlessly.
+                    </p>
+                </div>
+
+                <!-- Micro-Interactions -->
+                <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3">
+                    <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold text-lg">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-900 dark:text-white text-base">Tactile Micro-Feedback</h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                        Interactive active-scale transformations (<code class="font-mono text-slate-500">active:scale-95</code>) provide immediate feedback upon click or tap inputs.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Interactive Modal Overlay -->
+    <div id="modalOverlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-200 p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full p-6 border border-slate-200 dark:border-slate-800 shadow-2xl space-y-4 transform scale-95 transition-transform duration-200" id="modalContent">
+            <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-3">
+                <h3 class="font-bold text-slate-900 dark:text-white text-base">Modal Dialog Component</h3>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-sm p-1">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                Modals trap focus and prevent background scrolling to ensure users complete critical workflows without context switching.
+            </p>
+            <div class="flex justify-end space-x-2 pt-2">
+                <button onclick="closeModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+                    Dismiss
+                </button>
+                <button onclick="closeModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-700 transition">
+                    Confirm Action
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Overlay Container -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-6 theme-transition">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500 dark:text-slate-400 flex flex-col sm:flex-row justify-between items-center gap-2">
+            <p>© 2026 Designed & Developed for UI/UX & Frontend Portfolio.</p>
+            <div class="flex space-x-4 font-mono">
+                <span>HTML5 / CSS3</span>
+                <span>•</span>
+                <span>Tailwind CSS</span>
+                <span>•</span>
+                <span>Vanilla JS</span>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- 1. Theme Toggle Logic (Dark / Light Mode) ---
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const icon = document.getElementById('themeIcon');
+            
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                html.classList.add('light');
+                icon.className = 'fa-solid fa-moon text-lg';
+            } else {
+                html.classList.remove('light');
+                html.classList.add('dark');
+                icon.className = 'fa-solid fa-sun text-lg text-amber-400';
+            }
+        }
+
+        // --- 2. Dynamic Accent Color Token Swapper ---
+        function changeThemeAccent(hexColor) {
+            document.documentElement.style.setProperty('--color-brand-500', hexColor);
+            document.getElementById('tokenHexCode').innerText = hexColor;
+            document.getElementById('tokenHexCode').style.color = hexColor;
+            showToast(`Brand token updated to ${hexColor}`);
+        }
+
+        // --- 3. Async Button State Simulation ---
+        function triggerAsyncButton() {
+            const btn = document.getElementById('asyncBtn');
+            const text = document.getElementById('asyncBtnText');
+            const icon = document.getElementById('asyncBtnIcon');
+
+            // Set Loading state
+            btn.disabled = true;
+            text.innerText = "Processing...";
+            icon.className = "fa-solid fa-spinner fa-spin text-xs";
+
+            setTimeout(() => {
+                // Set Success state
+                text.innerText = "Completed!";
+                icon.className = "fa-solid fa-circle-check text-xs";
+                btn.className = "px-5 py-2.5 rounded-xl font-semibold text-sm bg-emerald-500 text-white transition-all duration-200 flex items-center space-x-2 min-w-[140px] justify-center";
+
+                // Reset back to original after 2.5 seconds
+                setTimeout(() => {
+                    btn.disabled = false;
+                    text.innerText = "Submit Action";
+                    icon.className = "fa-solid fa-arrow-right text-xs";
+                    btn.className = "px-5 py-2.5 rounded-xl font-semibold text-sm bg-emerald-600 hover:bg-emerald-700 text-white transition-all duration-200 flex items-center space-x-2 min-w-[140px] justify-center active:scale-95";
+                }, 2500);
+            }, 1200);
+        }
+
+        // --- 4. Live Email Validation ---
+        function validateEmail(value) {
+            const errorMsg = document.getElementById('emailError');
+            const icon = document.getElementById('emailStatusIcon');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (value.length === 0) {
+                errorMsg.classList.add('hidden');
+                icon.innerHTML = '';
+                return;
+            }
+
+            if (emailRegex.test(value)) {
+                errorMsg.classList.add('hidden');
+                icon.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-500"></i>';
+            } else {
+                errorMsg.classList.remove('hidden');
+                icon.innerHTML = '<i class="fa-solid fa-circle-xmark text-red-500"></i>';
+            }
+        }
+
+        // --- 5. Live Password Strength Meter ---
+        function checkPasswordStrength(val) {
+            const bar = document.getElementById('strengthBar');
+            const txt = document.getElementById('strengthText');
+
+            if (val.length === 0) {
+                bar.style.width = '0%';
+                txt.innerText = 'Weak';
+                txt.className = 'text-[11px] text-slate-400 font-mono w-16 text-right';
+                return;
+            }
+
+            let strength = 0;
+            if (val.length >= 6) strength += 33;
+            if (val.match(/[A-Z]/) && val.match(/[0-9]/)) strength += 33;
+            if (val.length >= 10 && val.match(/[^a-zA-Z0-9]/)) strength += 34;
+
+            bar.style.width = strength + '%';
+
+            if (strength <= 33) {
+                bar.className = 'h-full bg-red-500 transition-all duration-300';
+                txt.innerText = 'Weak';
+                txt.className = 'text-[11px] text-red-500 font-mono w-16 text-right font-bold';
+            } else if (strength <= 66) {
+                bar.className = 'h-full bg-amber-500 transition-all duration-300';
+                txt.innerText = 'Medium';
+                txt.className = 'text-[11px] text-amber-500 font-mono w-16 text-right font-bold';
+            } else {
+                bar.className = 'h-full bg-emerald-500 transition-all duration-300';
+                txt.innerText = 'Strong';
+                txt.className = 'text-[11px] text-emerald-500 font-mono w-16 text-right font-bold';
+            }
+        }
+
+        // --- 6. Custom Toggle Switch Logic ---
+        let toggleState = false;
+        function toggleSwitchState() {
+            toggleState = !toggleState;
+            const bg = document.getElementById('toggleSwitch');
+            const circle = document.getElementById('toggleCircle');
+
+            if (toggleState) {
+                bg.className = "w-12 h-6 bg-indigo-600 rounded-full p-1 transition-colors duration-200 ease-in-out relative";
+                circle.className = "w-4 h-4 bg-white rounded-full shadow-md transform translate-x-6 transition-transform duration-200 ease-in-out";
+                showToast("Push notifications enabled");
+            } else {
+                bg.className = "w-12 h-6 bg-slate-300 dark:bg-slate-700 rounded-full p-1 transition-colors duration-200 ease-in-out relative";
+                circle.className = "w-4 h-4 bg-white rounded-full shadow-md transform translate-x-0 transition-transform duration-200 ease-in-out";
+                showToast("Push notifications disabled");
+            }
+        }
+
+        // --- 7. Expandable Drawer Card ---
+        let drawerOpen = false;
+        function toggleCardDrawer() {
+            drawerOpen = !drawerOpen;
+            const drawer = document.getElementById('expandableDrawer');
+            const btnText = document.getElementById('drawerBtnText');
+
+            if (drawerOpen) {
+                drawer.classList.remove('hidden');
+                btnText.innerText = "Hide Bio";
+            } else {
+                drawer.classList.add('hidden');
+                btnText.innerText = "View Bio";
+            }
+        }
+
+        // --- 8. Custom Tab Navigation ---
+        function switchTab(tabKey) {
+            const tabs = ['tab1', 'tab2', 'tab3'];
+            const contentMap = {
+                'tab1': 'Design View: Focused on visual contrast, typographic scale, and spatial alignment.',
+                'tab2': 'Code View: HTML5 semantic tags, Tailwind utility classes, dynamic Javascript event binding.',
+                'tab3': 'Tokens View: Design tokens defined for color palettes, border radius, and component spacing.'
+            };
+
+            tabs.forEach(t => {
+                const btn = document.getElementById(`${t}-btn`);
+                if (t === tabKey) {
+                    btn.className = "flex-1 py-2 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm transition font-bold";
+                } else {
+                    btn.className = "flex-1 py-2 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition";
+                }
+            });
+
+            document.getElementById('tabContent').innerText = contentMap[tabKey];
+        }
+
+        // --- 9. Modal Control ---
+        function openModal() {
+            const modal = document.getElementById('modalOverlay');
+            const content = document.getElementById('modalContent');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modalOverlay');
+            const content = document.getElementById('modalContent');
+            modal.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200);
+        }
+
+        // --- 10. Toast Notification System ---
+        function showToast(message) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = "pointer-events-auto bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 px-4 py-2.5 rounded-xl text-xs font-semibold shadow-xl flex items-center space-x-2 transform translate-y-2 opacity-0 transition-all duration-200 border border-slate-700 dark:border-slate-300";
+            toast.innerHTML = `<i class="fa-solid fa-circle-info text-indigo-400 dark:text-indigo-600"></i> <span>${message}</span>`;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => {
+                    toast.remove();
+                }, 200);
+            }, 3000);
+        }
+
+        function triggerToast() {
+            showToast("Sample UI toast notification triggered!");
+        }
+    </script>
+</body>
+</html>
